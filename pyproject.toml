@@ -15,7 +15,6 @@ dependencies = [
     "matplotlib (>=3.10.0,<4.0.0)",
     "pillow (>=11.1.0,<12.0.0)",
     "pyqt5 (>=5.15.11,<6.0.0)",
-    "ruff (>=0.9.7,<0.10.0)"
 ]
 
 [tool.poetry]
@@ -24,6 +23,9 @@ package-mode = false
 [tool.poetry.scripts]
 demo = 'demo:demo'
 interpolate = 'interpolate:main'
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.9.7"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
