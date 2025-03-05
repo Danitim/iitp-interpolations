@@ -22,7 +22,10 @@ def main(image_path, x_scale, y_scale, save_path):
     image_arr = np.asarray(image)
 
     # interpolate
-    x_new, y_new = int(x_scale * image_arr.shape[0]), int(y_scale * image_arr.shape[1])
+    x_new, y_new = (
+        int(x_scale * image_arr.shape[0]),
+        int(y_scale * image_arr.shape[1]),
+    )
     interpolated_image_arr = bilinear_interpolation(image_arr, x_new, y_new)
     print(f"Original image shape: {image_arr.shape}")
     print(f"Interpolated image shape: {interpolated_image_arr.shape}")

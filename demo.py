@@ -10,7 +10,7 @@ def demo():
     image_arr = np.asarray(image)
 
     # interpolate
-    ratio = 4
+    ratio = 0.5
     x_new = int(ratio * image_arr.shape[0])
     y_new = int(ratio * image_arr.shape[1])
     interpolated_image_arr = bilinear_interpolation(image_arr, x_new, y_new)

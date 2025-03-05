@@ -24,8 +24,16 @@ package-mode = false
 demo = 'demo:demo'
 interpolate = 'interpolate:main'
 
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["F401"]
+
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.7"
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -3,8 +3,7 @@ from sklearn.preprocessing import PolynomialFeatures
 
 
 def polynomial_basis(mesh, degree):
-    """
-    Constructs a polynomial basis for interpolation in multiple
+    """Constructs a polynomial basis for interpolation in multiple
     dimensions for a given mesh.
 
     Args:
@@ -23,9 +22,10 @@ def polynomial_basis(mesh, degree):
     return A
 
 
-def node_wise_polynomial_interpolation(mesh_old, field_old, mesh_new, degree=1):
-    """
-    Interpolates a multidimensional field from an old mesh to a
+def node_wise_polynomial_interpolation(
+    mesh_old, field_old, mesh_new, degree=1
+):
+    """Interpolates a multidimensional field from an old mesh to a
     new mesh using the node-wise polynomial interpolation method.
 
     Args:
@@ -46,8 +46,7 @@ def node_wise_polynomial_interpolation(mesh_old, field_old, mesh_new, degree=1):
 
 
 def bilinear_interpolation(image, x_new, y_new):
-    """
-    Perform bilinear interpolation on an image.
+    """Perform bilinear interpolation on an image.
 
     Args:
         image (np.ndarray): Image.
@@ -58,7 +57,9 @@ def bilinear_interpolation(image, x_new, y_new):
         np.ndarray: Resized image.
     """
     height, width = image.shape[:2]
-    resized_image = np.zeros((y_new, x_new, *image.shape[2:]), dtype=image.dtype)
+    resized_image = np.zeros(
+        (y_new, x_new, *image.shape[2:]), dtype=image.dtype
+    )
 
     x_grid, y_grid = np.meshgrid(
         np.linspace(0, width - 1, x_new), np.linspace(0, height - 1, y_new)
