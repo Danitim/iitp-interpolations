@@ -34,6 +34,7 @@ ignore = ["F401"]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.7"
 pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
