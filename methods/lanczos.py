@@ -2,63 +2,73 @@ import numpy as np
 from tqdm import tqdm
 
 
-def sinc(x):
+def sinc(x: np.ndarray) -> np.ndarray:
+    """Sinc function normalized as sin(pi * x) / (pi * x)."""
     x = np.where(x == 0, 1e-10, x)
     return np.sin(np.pi * x) / (np.pi * x)
 
 
-def lanczos_kernel(x, a):
-    return np.where(np.abs(x) < a, sinc(x) * sinc(x / a), 0)
+def lanczos_kernel(x: np.ndarray, a: int) -> np.ndarray:
+    """Lanczos windowed sinc kernel."""
+    return np.where(np.abs(x) < a, sinc(x) * sinc(x / a), 0.0)
 
 
-def lanczos_interpolation(image, new_height, new_width, a=3):
-    """
-    Optimized Lanczos interpolation for grayscale or RGB image.
-    """
+def lanczos_interpolation(
+    image: np.ndarray,
+    new_height: int,
+    new_width: int,
+    a: int = 3,
+) -> np.ndarray:
+    if image.size == 0 or new_height <= 0 or new_width <= 0:
+        msg = "Invalid image or output dimensions"
+        raise ValueError(msg)
+
     if image.ndim == 2:
-        return _lanczos_interpolate_gray_fast(image, new_height, new_width, a)
-    elif image.ndim == 3:
+        return _lanczos_gray(image, new_height, new_width, a)
+    if image.ndim == 3:
         return np.stack(
-            [
-                _lanczos_interpolate_gray_fast(
-                    image[..., c], new_height, new_width, a
-                )
-                for c in range(image.shape[2])
-            ],
+            [_lanczos_gray(image[..., c], new_height, new_width, a, channel=c) for c in range(image.shape[2])],
             axis=-1,
         )
-    else:
-        raise ValueError("Unsupported image dimensions")
+    msg = "Unsupported image dimensions"
+    raise ValueError(msg)
 
 
-def _lanczos_interpolate_gray_fast(image, new_h, new_w, a):
+def _lanczos_gray(
+    image: np.ndarray,
+    new_h: int,
+    new_w: int,
+    a: int,
+    channel: int | None = None,
+) -> np.ndarray:
     h, w = image.shape
-    scale_x = h / new_h
-    scale_y = w / new_w
+    _ = h / new_h
+    _ = w / new_w
+
+    out = np.zeros((new_h, new_w), dtype=np.float32)
 
     x_coords = np.linspace(0, h - 1, new_h)
     y_coords = np.linspace(0, w - 1, new_w)
 
-    out = np.zeros((new_h, new_w), dtype=np.float32)
+    bar_desc = f"Lanczos Interpolation{' (channel ' + str(channel) + ')' if channel is not None else ''}"
 
-    for i, x in enumerate(tqdm(x_coords, desc="Interpolating", unit="line")):
+    for i, x in enumerate(tqdm(x_coords, desc=bar_desc, unit="line")):
         x_int = int(np.floor(x))
-        dx = np.arange(x_int - a + 1, x_int + a)
-        dx = dx[(dx >= 0) & (dx < h)]
-        kx = lanczos_kernel(x - dx[:, None], a)
+        x_range = np.arange(x_int - a + 1, x_int + a)
+        x_range = np.clip(x_range, 0, h - 1)
+        wx = lanczos_kernel(x - x_range[:, None], a)
 
         for j, y in enumerate(y_coords):
             y_int = int(np.floor(y))
-            dy = np.arange(y_int - a + 1, y_int + a)
-            dy = dy[(dy >= 0) & (dy < w)]
-            ky = lanczos_kernel(y - dy, a)
+            y_range = np.arange(y_int - a + 1, y_int + a)
+            y_range = np.clip(y_range, 0, w - 1)
+            wy = lanczos_kernel(y - y_range, a)[None, :]
 
-            patch = image[np.ix_(dx, dy)]
-            weights = np.outer(
-                kx[: len(dx)].flatten(), ky[: len(dy)].flatten()
-            )
+            patch = image[np.ix_(x_range, y_range)]
+            weights = wx[: len(x_range)] * wy[:, : len(y_range)]
+
             norm = np.sum(weights)
-
-            out[i, j] = (patch * weights).sum() / norm if norm != 0 else 0
+            value = np.sum(patch * weights)
+            out[i, j] = value / norm if norm != 0 else 0.0
 
     return np.clip(out, 0, 255).astype(np.uint8)

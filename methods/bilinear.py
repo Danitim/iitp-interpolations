@@ -1,63 +1,57 @@
 import numpy as np
 
 
-def create_resized_image(image, x_new, y_new):
-    """Initialize an empty resized image with the same type and number
-    of channels."""
-    return np.zeros((y_new, x_new, *image.shape[2:]), dtype=image.dtype)
-
-
-def generate_interpolation_grid(width, height, x_new, y_new):
-    """Generate the interpolation grid for bilinear interpolation."""
-    x_grid, y_grid = np.meshgrid(
-        np.linspace(0, width - 1, x_new), np.linspace(0, height - 1, y_new)
-    )
-    return x_grid, y_grid
-
-
-def get_surrounding_pixels(x_grid, y_grid, width, height):
-    """Get integer coordinates of surrounding pixels and ensure they stay
-    in bounds."""
-    x0, y0 = np.floor(x_grid).astype(int), np.floor(y_grid).astype(int)
-    x1, y1 = np.clip(x0 + 1, 0, width - 1), np.clip(y0 + 1, 0, height - 1)
-    return x0, y0, x1, y1
-
-
-def compute_interpolation_weights(x_grid, y_grid, x0, y0):
-    """Compute weights for bilinear interpolation."""
-    dx, dy = x_grid - x0, y_grid - y0
-    return dx, dy
-
-
-def bilinear_interpolate_channel(channel, x0, y0, x1, y1, dx, dy):
-    """Perform bilinear interpolation for a single channel."""
-    Ia, Ib, Ic, Id = (
-        channel[y0, x0],
-        channel[y1, x0],
-        channel[y0, x1],
-        channel[y1, x1],
-    )
-    top = Ia + dx * (Ic - Ia)
-    bottom = Ib + dx * (Id - Ib)
-    return top + dy * (bottom - top)
-
-
-def bilinear_interpolation(image, x_new, y_new):
-    """Perform bilinear interpolation on an image."""
-    height, width = image.shape[:2]
-    resized_image = create_resized_image(image, x_new, y_new)
-    x_grid, y_grid = generate_interpolation_grid(width, height, x_new, y_new)
-    x0, y0, x1, y1 = get_surrounding_pixels(x_grid, y_grid, width, height)
-    dx, dy = compute_interpolation_weights(x_grid, y_grid, x0, y0)
-
+def bilinear_interpolation(
+    image: np.ndarray,
+    new_height: int,
+    new_width: int,
+) -> np.ndarray:
+    if image.ndim == 2:
+        return _bilinear_gray(image, new_height, new_width)
     if image.ndim == 3:
-        for c in range(image.shape[2]):
-            resized_image[..., c] = bilinear_interpolate_channel(
-                image[..., c], x0, y0, x1, y1, dx, dy
-            )
-    else:
-        resized_image = bilinear_interpolate_channel(
-            image, x0, y0, x1, y1, dx, dy
+        return np.stack(
+            [_bilinear_gray(image[..., c], new_height, new_width) for c in range(image.shape[2])],
+            axis=-1,
         )
+    msg = "Unsupported image dimensions"
+    raise ValueError(msg)
 
-    return resized_image.astype(image.dtype)
+
+def _bilinear_gray(
+    image: np.ndarray,
+    new_h: int,
+    new_w: int,
+) -> np.ndarray:
+    h, w = image.shape
+    if h == 0 or w == 0:
+        msg = "Empty image."
+        raise ValueError(msg)
+
+    _ = h / new_h
+    _ = w / new_w
+
+    # Сетка новых координат
+    x = np.linspace(0, h - 1, new_h)
+    y = np.linspace(0, w - 1, new_w)
+    x_grid, y_grid = np.meshgrid(x, y, indexing="ij")
+
+    x0 = np.floor(x_grid).astype(int)
+    y0 = np.floor(y_grid).astype(int)
+    x1 = np.clip(x0 + 1, 0, h - 1)
+    y1 = np.clip(y0 + 1, 0, w - 1)
+
+    dx = x_grid - x0
+    dy = y_grid - y0
+
+    Ia = image[x0, y0]
+    Ib = image[x0, y1]
+    Ic = image[x1, y0]
+    Id = image[x1, y1]
+
+    wa = (1 - dx) * (1 - dy)
+    wb = (1 - dx) * dy
+    wc = dx * (1 - dy)
+    wd = dx * dy
+
+    result = wa * Ia + wb * Ib + wc * Ic + wd * Id
+    return np.clip(result, 0, 255).astype(np.uint8)
