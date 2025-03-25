@@ -24,6 +24,9 @@ package-mode = false
 demo = 'demo:demo'
 interpolate = 'interpolate:main'
 
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report=term-missing"
+
 [tool.ruff]
 line-length = 79
 
