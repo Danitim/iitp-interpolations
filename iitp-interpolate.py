@@ -11,7 +11,7 @@ from methods.spline import spline_interpolation
 INTERPOLATION_METHODS = {
     "bilinear": bilinear_interpolation,
     "lanczos": lanczos_interpolation,
-    "spline": spline_interpolation
+    "spline": spline_interpolation,
 }
 
 

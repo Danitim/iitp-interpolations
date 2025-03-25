@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def create_resized_image(image, x_new, y_new):
     """Initialize an empty resized image with the same type and number
     of channels."""
