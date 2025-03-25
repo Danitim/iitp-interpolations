@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from methods import (
+from methods.bilinear import (
     create_resized_image,
     generate_interpolation_grid,
     get_surrounding_pixels,
@@ -50,15 +50,40 @@ def test_bilinear_interpolate_channel():
     assert result.shape == (3, 3)
 
 
-def test_bilinear_interpolation():
+def test_bilinear_interpolation_rgb_image():
+    # 2x2 RGB изображение (3 канала)
     image = np.array(
-        [[[0, 0, 0], [10, 10, 10]], [[20, 20, 20], [30, 30, 30]]],
-        dtype=np.uint8,
+        [[[10, 20, 30], [40, 50, 60]], [[70, 80, 90], [100, 110, 120]]],
+        dtype=np.float32,
     )
-    resized = bilinear_interpolation(image, 4, 4)
-    assert resized.shape == (4, 4, 3)
-    assert resized.dtype == np.uint8
+
+    x_new, y_new = 4, 4
+    result = bilinear_interpolation(image, x_new, y_new)
+
+    assert isinstance(result, np.ndarray)
+    assert result.shape == (4, 4, 3)
+
+    assert np.allclose(result[0, 0], [10, 20, 30])
+    assert np.allclose(result[0, -1], [40, 50, 60])
+    assert np.allclose(result[-1, 0], [70, 80, 90])
+    assert np.allclose(result[-1, -1], [100, 110, 120])
+
+
+def test_bilinear_interpolation_grayscale_image():
+    # 2x2 изображение, только один канал (grayscale)
+    image = np.array([[10, 20], [30, 40]], dtype=np.float32)
+
+    x_new, y_new = 4, 4
+    result = bilinear_interpolation(image, x_new, y_new)
+
+    assert isinstance(result, np.ndarray)
+    assert result.shape == (4, 4)
+
+    assert np.isclose(result[0, 0], 10.0)
+    assert np.isclose(result[0, -1], 20.0)
+    assert np.isclose(result[-1, 0], 30.0)
+    assert np.isclose(result[-1, -1], 40.0)
 
 
 if __name__ == "__main__":
-    pytest.main() # pragma: no cover
+    pytest.main()  # pragma: no cover
