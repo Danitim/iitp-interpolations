@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import click
 
-from src.methods import bilinear_interpolation
+from methods.bilinear import bilinear_interpolation
 
 
 @click.command()

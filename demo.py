@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
-from src.methods import bilinear_interpolation
+from methods.bilinear import bilinear_interpolation
 
 
 def demo():
