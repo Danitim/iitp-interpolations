@@ -9,6 +9,7 @@
 project = 'iitp-interpolations'
 copyright = '2025, Daniil Timchenko'
 author = 'Daniil Timchenko'
+release = '0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -16,7 +17,7 @@ author = 'Daniil Timchenko'
 extensions = []
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = []
 
 
 
