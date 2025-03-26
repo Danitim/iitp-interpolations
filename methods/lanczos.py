@@ -1,15 +1,32 @@
+"""Lancsoz interpolation method."""
+
 import numpy as np
 from tqdm import tqdm
 
 
 def sinc(x: np.ndarray) -> np.ndarray:
-    """Sinc function normalized as sin(pi * x) / (pi * x)."""
+    """Computes the normalized sinc function: sin(pi * x) / (pi * x).
+
+    Args:
+        x (np.ndarray): Input array.
+
+    Returns:
+        np.ndarray: Array of sinc values for each element in x.
+    """
     x = np.where(x == 0, 1e-10, x)
     return np.sin(np.pi * x) / (np.pi * x)
 
 
 def lanczos_kernel(x: np.ndarray, a: int) -> np.ndarray:
-    """Lanczos windowed sinc kernel."""
+    """Computes the Lanczos windowed sinc kernel.
+
+    Args:
+        x (np.ndarray): Distance(s) from the interpolation center.
+        a (int): Size of the Lanczos window (typically 2 or 3).
+
+    Returns:
+        np.ndarray: Weight values for each element in x.
+    """
     return np.where(np.abs(x) < a, sinc(x) * sinc(x / a), 0.0)
 
 
@@ -19,6 +36,20 @@ def lanczos_interpolation(
     new_width: int,
     a: int = 3,
 ) -> np.ndarray:
+    """Performs Lanczos interpolation on a grayscale or RGB image.
+
+    Args:
+        image (np.ndarray): Input image (2D grayscale or 3D RGB).
+        new_height (int): Target height of the output image.
+        new_width (int): Target width of the output image.
+        a (int, optional): Size of the Lanczos window. Defaults to 3.
+
+    Returns:
+        np.ndarray: Interpolated image.
+
+    Raises:
+        ValueError: If the input image has unsupported dimensions or invalid size.
+    """
     if image.size == 0 or new_height <= 0 or new_width <= 0:
         msg = "Invalid image or output dimensions"
         raise ValueError(msg)
@@ -41,6 +72,18 @@ def _lanczos_gray(
     a: int,
     channel: int | None = None,
 ) -> np.ndarray:
+    """Performs Lanczos interpolation on a single grayscale image channel.
+
+    Args:
+        image (np.ndarray): 2D array representing the grayscale image.
+        new_h (int): Desired height of the output image.
+        new_w (int): Desired width of the output image.
+        a (int): Lanczos kernel window size (radius).
+        channel (int | None, optional): Channel index for logging. Defaults to None.
+
+    Returns:
+        np.ndarray: Interpolated 2D image of shape (new_h, new_w).
+    """
     h, w = image.shape
     _ = h / new_h
     _ = w / new_w

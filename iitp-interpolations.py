@@ -1,8 +1,10 @@
+"""IITP-interpolations main executable function."""
+
 import click
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 
 from methods.bilinear import bilinear_interpolation
 from methods.lanczos import lanczos_interpolation
@@ -100,7 +102,7 @@ def _showcase_all_methods(image_arr: np.ndarray, new_h: int, new_w: int) -> None
             b = results[methods[j]].astype(np.float32).flatten()
             mae = mean_absolute_error(a, b)
             print(f"  {methods[i]} vs {methods[j]}: MAE = {mae:.2f}")
-            
+
     # Отображение результатов
     fig, axes = plt.subplots(1, 4, figsize=(16, 5))
     for ax, (title, img) in zip(axes, results.items(), strict=False):
