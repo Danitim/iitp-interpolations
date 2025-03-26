@@ -7,10 +7,10 @@ def bilinear_interpolation(
     new_width: int,
 ) -> np.ndarray:
     if image.ndim == 2:
-        return _bilinear_gray(image, new_height, new_width)
+        return _bilinear_gray(image, new_height, new_width, 0)
     if image.ndim == 3:
         return np.stack(
-            [_bilinear_gray(image[..., c], new_height, new_width) for c in range(image.shape[2])],
+            [_bilinear_gray(image[..., c], new_height, new_width, c) for c in range(image.shape[2])],
             axis=-1,
         )
     msg = "Unsupported image dimensions"
@@ -21,6 +21,7 @@ def _bilinear_gray(
     image: np.ndarray,
     new_h: int,
     new_w: int,
+    channel: int,
 ) -> np.ndarray:
     h, w = image.shape
     if h == 0 or w == 0:
@@ -54,4 +55,7 @@ def _bilinear_gray(
     wd = dx * dy
 
     result = wa * Ia + wb * Ib + wc * Ic + wd * Id
+    
+    print(f"Bilinear interpolation (channel {channel}) complete!")
+    
     return np.clip(result, 0, 255).astype(np.uint8)
