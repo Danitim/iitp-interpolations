@@ -16,6 +16,7 @@ dependencies = [
     "pillow (>=11.1.0,<12.0.0)",
     "pyqt5 (>=5.15.11,<6.0.0)",
     "tqdm (>=4.67.1,<5.0.0)",
+    "types-tqdm (>=4.67.0.20250417,<5.0.0.0)",
 ]
 
 [tool.poetry]
@@ -52,6 +53,9 @@ pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 sphinx = "^8.2.3"
 furo = "^2024.8.6"
+nox = "^2025.5.1"
+mypy = "^1.15.0"
+nox-poetry = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
