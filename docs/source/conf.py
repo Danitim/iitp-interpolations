@@ -16,6 +16,12 @@ release = '0.1'
 
 extensions = [
     'sphinx.ext.duration',
+    'myst_parser',
+    "autodoc2",
+    "sphinx_click"
+]
+autodoc2_packages = [
+    "../../methods",
 ]
 
 templates_path = ['_templates']
