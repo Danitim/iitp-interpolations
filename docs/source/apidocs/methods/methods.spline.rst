@@ -19,9 +19,6 @@ Functions
    * - :py:obj:`cubic_kernel <methods.spline.cubic_kernel>`
      - .. autodoc2-docstring:: methods.spline.cubic_kernel
           :summary:
-   * - :py:obj:`cubic_interpolate <methods.spline.cubic_interpolate>`
-     - .. autodoc2-docstring:: methods.spline.cubic_interpolate
-          :summary:
    * - :py:obj:`_fast_bicubic_patch <methods.spline._fast_bicubic_patch>`
      - .. autodoc2-docstring:: methods.spline._fast_bicubic_patch
           :summary:
@@ -39,11 +36,6 @@ API
    :canonical: methods.spline.cubic_kernel
 
    .. autodoc2-docstring:: methods.spline.cubic_kernel
-
-.. py:function:: cubic_interpolate(p: numpy.ndarray, x: float) -> float
-   :canonical: methods.spline.cubic_interpolate
-
-   .. autodoc2-docstring:: methods.spline.cubic_interpolate
 
 .. py:function:: _fast_bicubic_patch(patch: numpy.ndarray, dx: float, dy: float) -> float
    :canonical: methods.spline._fast_bicubic_patch

@@ -18,6 +18,7 @@ Check out the :doc:`usage` section for further information, including how to
    :caption: Contents:
 
    usage.md
+   apidocs/index
    bilinear_interpolation.md
    lanczos_interpolation.md
    spline_interpolation.md
