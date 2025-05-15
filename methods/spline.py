@@ -23,21 +23,6 @@ def cubic_kernel(x: float) -> float:
     return 0.0
 
 
-def cubic_interpolate(p: np.ndarray, x: float) -> float:
-    """Performs 1D cubic interpolation for 4 control points.
-
-    Args:
-        p (np.ndarray): Array of 4 values to interpolate between.
-        x (float): Fractional position between p[1] and p[2].
-
-    Returns:
-        float: Interpolated value.
-    """
-    return p[1] + 0.5 * x * (
-        p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0]))
-    )
-
-
 def _fast_bicubic_patch(patch: np.ndarray, dx: float, dy: float) -> float:
     """Performs fast 2D bicubic interpolation on a 4x4 patch.
 

@@ -43,7 +43,6 @@ convention = "google"
 select = ["ALL"]
 ignore = [  "T201",     # print usage
             "PLR2004",  # "magic" values
-            "PLR0913",  # functions with many arguments
             "N806",     # non-lowercase variables
             "D212",     # because D213 is active
             "D203"]     # because D211 is active
