@@ -93,7 +93,7 @@ def _showcase_all_methods(image_arr: np.ndarray, new_h: int, new_w: int) -> None
         result = func(image_arr, new_h, new_w)
         results[name.capitalize()] = result
 
-    # --- Анализ схожести между методами ---
+    # Анализ схожести между методами
     print("\n[INFO] Comparing interpolated results (MAE between methods):")
     methods = list(results.keys())[1:]
     for i in range(len(methods)):
