@@ -41,9 +41,7 @@ convention = "google"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = [  "PT011",    # pytest without match
-            "S101",     # assert usage
-            "T201",     # print usage
+ignore = [  "T201",     # print usage
             "PLR2004",  # "magic" values
             "PLR0913",  # functions with many arguments
             "N806",     # non-lowercase variables
